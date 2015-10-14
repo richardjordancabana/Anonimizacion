@@ -73,5 +73,55 @@ public class MySql {
             Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+      
+      //inserta datos en la tabla
+      public void insertData(String table_name, String ID, String name, String lastname, String age, String gender) {
+        try {
+            String Query = "INSERT INTO " + table_name + " VALUES("
+                    + "\"" + ID + "\", "
+                    + "\"" + name + "\", "
+                    + "\"" + lastname + "\", "
+                    + "\"" + age + "\", "
+                    + "\"" + gender + "\")";
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(Query);
+            JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en el almacenamiento de datos");
+        }
+    }
     
+       //select *
+      public void getValues(String table_name) {
+        try {
+            String Query = "SELECT * FROM " + table_name;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                System.out.println("ID: " + resultSet.getString("ID") + " "
+                        + "Nombre: " + resultSet.getString("Nombre") + " " + resultSet.getString("Apellido") + " "
+                        + "Edad: " + resultSet.getString("Edad") + " "
+                        + "Sexo: " + resultSet.getString("Sexo"));
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
+        }
+    }
+      
+      //borra por id  
+      public void deleteRecord(String table_name, String ID) {
+        try {
+            String Query = "DELETE FROM " + table_name + " WHERE ID = \"" + ID + "\"";
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(Query);
+
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Error borrando el registro especificado");
+        }
+    }
+       
 }
