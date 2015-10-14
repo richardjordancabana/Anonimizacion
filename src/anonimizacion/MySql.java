@@ -59,7 +59,7 @@ public class MySql {
         }
     }
      
-     //crea una tabla
+     //crea una tabla 
       public void createTable(String name) {
         try {
             String Query = "CREATE TABLE " + name + ""
