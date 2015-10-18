@@ -63,8 +63,7 @@ public class MySql {
       public void createTable(String name) {
         try {
             String Query = "CREATE TABLE " + name + ""
-                    + "(ID VARCHAR(25),Nombre VARCHAR(50), Apellido VARCHAR(50),"
-                    + " Edad VARCHAR(3), Sexo VARCHAR(1))";
+                    + "(DNI VARCHAR(15),Edad int,CP VARCHAR(10), Diagnostico VARCHAR(1000))";
 
             Statement st = Conexion.createStatement();
             st.executeUpdate(Query);
@@ -75,14 +74,13 @@ public class MySql {
     }
       
       //inserta datos en la tabla
-      public void insertData(String table_name, String ID, String name, String lastname, String age, String gender) {
+      public void insertData(String table_name,String DNI, int ID, int edad, String diag) {
         try {
             String Query = "INSERT INTO " + table_name + " VALUES("
-                    + "\"" + ID + "\", "
-                    + "\"" + name + "\", "
-                    + "\"" + lastname + "\", "
-                    + "\"" + age + "\", "
-                    + "\"" + gender + "\")";
+                    + "\"" + DNI + "\""
+                    + ID + ","
+                    + edad + ","
+                    + "\"" + diag + "\")";
             Statement st = Conexion.createStatement();
             st.executeUpdate(Query);
             JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
@@ -100,10 +98,9 @@ public class MySql {
             resultSet = st.executeQuery(Query);
 
             while (resultSet.next()) {
-                System.out.println("ID: " + resultSet.getString("ID") + " "
-                        + "Nombre: " + resultSet.getString("Nombre") + " " + resultSet.getString("Apellido") + " "
-                        + "Edad: " + resultSet.getString("Edad") + " "
-                        + "Sexo: " + resultSet.getString("Sexo"));
+                System.out.println("ID: " + resultSet.getInt("ID") + " "
+                        + "Edad: " + resultSet.getInt("Edad") + " "
+                        + "Diagnóstico: " + resultSet.getString("Diagnostico"));
             }
 
         } catch (SQLException ex) {
@@ -111,10 +108,10 @@ public class MySql {
         }
     }
       
-      //borra por id  
-      public void deleteRecord(String table_name, String ID) {
+      //borra por DNI 
+      public void deleteRecord(String table_name, String DNI) {
         try {
-            String Query = "DELETE FROM " + table_name + " WHERE ID = \"" + ID + "\"";
+            String Query = "DELETE FROM " + table_name + " WHERE DNI = " + DNI ;
             Statement st = Conexion.createStatement();
             st.executeUpdate(Query);
 

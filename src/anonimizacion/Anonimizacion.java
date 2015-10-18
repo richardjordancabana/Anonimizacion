@@ -13,11 +13,9 @@ public class Anonimizacion {
     public static void main(String[] args) throws Exception {
         // TODO code application logic here
    
-        MySql db = new MySql();
-        db.MySQLConnection("root", "", "");
-    
-
-        
+        Ventana w=new Ventana();
+        w.setVisible(true);
+      
     }
     
 }
