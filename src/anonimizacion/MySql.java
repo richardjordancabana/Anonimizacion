@@ -140,7 +140,8 @@ public class MySql {
             while (resultSet.next()) {
                 
                 int val =  ((Number) resultSet.getObject(1)).intValue();
-                System.out.println("El valor de K es:" + val);
+                JOptionPane.showMessageDialog(null, "El valor de K es:" + val);
+               
             }
 
         } catch (SQLException ex) {
