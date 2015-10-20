@@ -21,6 +21,9 @@ import javax.swing.JOptionPane;
 public class MySql {
     
     private static Connection Conexion;
+    private String usuario;
+    private String contrasenia;
+    private String base;
     
     //conexión con la bbdd
     public void MySQLConnection(String user, String pass, String db_name) throws Exception {
@@ -34,6 +37,21 @@ public class MySql {
             Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public void MySQLConnection() throws Exception {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            Conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + base, usuario, contrasenia);
+            JOptionPane.showMessageDialog(null, "Se ha iniciado la conexión con el servidor de forma exitosa");
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    
+    
   
     //cerrar la conexión
      public void closeConnection() {
@@ -108,6 +126,32 @@ public class MySql {
         }
     }
       
+      
+      
+    public void getK(String table_name,String campos) {
+        try {
+            
+            
+            String Query = "SELECT MIN(CUENTA) FROM  (select count(*) as cuenta from " + table_name+" GROUP BY "+ campos+" ) tabla";
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                
+                int val =  ((Number) resultSet.getObject(1)).intValue();
+                System.out.println("El valor de K es:" + val);
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
+        }
+    }
+      
+      
+      
+      
+      
       //borra por DNI 
       public void deleteRecord(String table_name, String DNI) {
         try {
@@ -120,5 +164,15 @@ public class MySql {
             JOptionPane.showMessageDialog(null, "Error borrando el registro especificado");
         }
     }
+      
+      public void setUser(String u){ 
+          usuario=u;
+      }
+       public void setPass(String p){ 
+          contrasenia=p;
+      }
+        public void setBBDD(String b){ 
+          base=b;
+      }
        
 }
