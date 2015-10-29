@@ -30,7 +30,7 @@ public class MySql {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + db_name, user, pass);
-            JOptionPane.showMessageDialog(null, "Se ha iniciado la conexión con el servidor de forma exitosa");
+            JOptionPane.showMessageDialog(null, "It has started the connection to the server successfully");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -42,7 +42,7 @@ public class MySql {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             Conexion = DriverManager.getConnection("jdbc:mysql://localhost:3306/" + base, usuario, contrasenia);
-            JOptionPane.showMessageDialog(null, "Se ha iniciado la conexión con el servidor de forma exitosa");
+            JOptionPane.showMessageDialog(null, "It has started the connection to the server successfully");
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -57,7 +57,7 @@ public class MySql {
      public void closeConnection() {
         try {
             Conexion.close();
-            JOptionPane.showMessageDialog(null, "Se ha finalizado la conexión con el servidor");
+            JOptionPane.showMessageDialog(null, "It has completed the connection to the server");
         } catch (SQLException ex) {
             Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
         }
