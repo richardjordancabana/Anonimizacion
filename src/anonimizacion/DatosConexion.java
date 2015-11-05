@@ -18,9 +18,9 @@ public class DatosConexion extends javax.swing.JFrame {
      * Creates new form DatosConexion
      */
     
-    public String user;
-    public String password;
-    public String bbdd;
+    public String user;//root
+    public String password;//""
+    public String bbdd;//test
     
     public DatosConexion() {
         initComponents();

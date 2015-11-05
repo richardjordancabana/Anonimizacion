@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -147,6 +148,80 @@ public class MySql {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
         }
+    }
+    
+    
+    
+    //genera tablas de la forma ID,EDAD,CP,GENERO con gente aleatoria
+     public void generateTable(String table,int num,int min, int max, String CP,String sex) {
+        
+         String[] cp=CP.split(",");
+         Random r = new Random();
+         String[] sentencias = new String[num];
+         String genre;
+         if(sex.equals("man"))
+             genre="man";
+         else genre="woman";
+         
+         for(int i =0; i<num;i++)
+         {
+             int aux=max-min;
+             int n=r.nextInt(aux);
+             int age=min+n;
+             String code=cp[n%cp.length];
+             
+             if(sex.equals("") && (n % 2==0))
+                 genre="man";
+             if(sex.equals("") && (n % 2==1))
+                 genre="woman";
+             sentencias[i]="INSERT INTO "+ table + " VALUES("
+                    + i + ","
+                    + age + ","
+                    + "\"" + code + "\""+ ","
+                    + "\"" + genre + "\")" ;
+  
+         }
+         
+         //crear tabla y ejecutar sentencias
+         
+         
+          try {
+            String Query = "DROP TABLE " + table ;
+
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(Query);
+           // JOptionPane.showMessageDialog(null, "Se borrado la tabla " + table + " de forma exitosa");
+        } catch (SQLException ex) {
+            Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+  
+        try {
+            String Query = "CREATE TABLE " + table + ""
+                    + "(ID VARCHAR(15),AGE int,CP VARCHAR(10), SEX VARCHAR(100))";
+
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(Query);
+           // JOptionPane.showMessageDialog(null, "Se ha creado la tabla " + table + " de forma exitosa");
+        } catch (SQLException ex) {
+            Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for(int i=0;i<sentencias.length;i++)
+        {
+            
+            try {
+            
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(sentencias[i]);
+           // JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en el almacenamiento de datos");
+        }
+            
+        }
+        
+        
     }
       
       

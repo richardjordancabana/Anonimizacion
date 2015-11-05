@@ -17,6 +17,7 @@ public class Ventana extends javax.swing.JFrame {
     MySql db=new MySql();
     DatosConexion  dc;
     CalcularK ck;
+    GenerateTable gt;
     
     public Ventana() {
         initComponents();
@@ -34,6 +35,8 @@ public class Ventana extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -60,6 +63,17 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
+        jButton3.setText("Generate Table");
+        jButton3.setEnabled(false);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jButton5.setText("Show Table");
+        jButton5.setEnabled(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -67,13 +81,17 @@ public class Ventana extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(169, 169, 169)
-                        .addComponent(jButton4))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(145, 145, 145)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton1)
-                            .addComponent(jButton2))))
+                            .addComponent(jButton2)
+                            .addComponent(jButton3)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addComponent(jButton5))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(168, 168, 168)
+                        .addComponent(jButton4)))
                 .addContainerGap(140, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -81,11 +99,15 @@ public class Ventana extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(37, 37, 37)
                 .addComponent(jButton1)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addComponent(jButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2)
-                .addContainerGap(61, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -95,8 +117,11 @@ public class Ventana extends javax.swing.JFrame {
        
         dc = new DatosConexion();
         dc.setVisible(true);
+        //Comprobar que la conezion es correcta para habilitar las opciones
         jButton2.setEnabled(true);
+        jButton3.setEnabled(true);
         jButton4.setEnabled(true);
+        //jButton5.setEnabled(true);
         jButton1.setEnabled(false);
         
         
@@ -105,14 +130,25 @@ public class Ventana extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        if(ck!=null){
         ck.user="";
         ck.password="";
         ck.bbdd="";
+        }
+        if(dc!=null){
         dc.user="";
         dc.password="";
         dc.bbdd="";
+        }
+        if(gt!=null){
+        gt.user="";
+        gt.password="";
+        gt.bbdd="";
+        }
         jButton2.setEnabled(false);
         jButton4.setEnabled(false);
+        jButton3.setEnabled(false);
+        //jButton5.setEnabled(false);
         jButton1.setEnabled(true);
         
         
@@ -128,6 +164,16 @@ public class Ventana extends javax.swing.JFrame {
         ck.setVisible(true);
         
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        gt = new GenerateTable();
+        gt.user=dc.user;
+        gt.password=dc.password;
+        gt.bbdd=dc.bbdd;
+        gt.setVisible(true);
+        
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -167,6 +213,8 @@ public class Ventana extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     // End of variables declaration//GEN-END:variables
 }
