@@ -153,9 +153,15 @@ public class MySql {
     
     
     //genera tablas de la forma ID,EDAD,CP,GENERO con gente aleatoria
-     public void generateTable(String table,int num,int min, int max, String CP,String sex) {
+     public void generateTable(String table,int num,int min, int max, int CP,String sex) {
         
-         String[] cp=CP.split(",");
+         int a=28000;
+         String[] cp = new String[CP];
+         for (int i=0;i<CP;i++)
+         {
+             cp[i]=Integer.toString(a+i);
+         }
+          
          Random r = new Random();
          String[] sentencias = new String[num];
          String genre;
@@ -224,6 +230,16 @@ public class MySql {
         
     }
       
+      public void generateTables(int numTables,String table,int num,int min, int max, int CP,String sex) {
+        
+         for(int i =0;i<numTables;i++)
+         {
+             String name=table+i;
+             generateTable(name,num,min,max,CP,sex);
+         }
+        
+        
+    }
       
       
       
