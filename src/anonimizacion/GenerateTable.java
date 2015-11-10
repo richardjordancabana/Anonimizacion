@@ -220,10 +220,18 @@ public class GenerateTable extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(GenerateTable.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(numTables==1)
-          db.generateTable(tabla,num,min,max,cp,sex);
-        else db.generateTables(numTables,tabla,num,min,max,cp,sex);
-          db.closeConnection();
+        if(real){
+            if(numTables==1)
+                  db.generateTableSpain(tabla,num,cp,sex);
+            else db.generateTablesSpain(numTables,tabla,num,cp,sex);
+                  db.closeConnection();
+              }
+        else {
+             if(numTables==1)
+                  db.generateTable(tabla,num,min,max,cp,sex);
+             else db.generateTables(numTables,tabla,num,min,max,cp,sex);
+                  db.closeConnection();
+              }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

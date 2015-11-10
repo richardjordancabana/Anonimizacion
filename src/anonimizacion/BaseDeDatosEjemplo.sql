@@ -25,3 +25,8 @@ delete from tabla1 where DNI="50002";
  from (select count(*) as cuenta 
     from tabla1
     group by edad,CP) tabla
+
+-- para borrar las tablas
+SELECT CONCAT('drop table ',table_name,'; ')
+FROM information_schema.tables
+WHERE table_schema = 'test';
