@@ -68,8 +68,12 @@ public class GenerateTable extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel2.setText("Min Age");
 
+        jTextField2.setText("0");
+
         jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel3.setText("Max Age");
+
+        jTextField3.setText("100");
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel4.setText("Sex");
@@ -97,6 +101,7 @@ public class GenerateTable extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel7.setText("Number of Tables");
 
+        jTextField7.setText("10");
         jTextField7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField7ActionPerformed(evt);
@@ -202,14 +207,29 @@ public class GenerateTable extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+       
+        int min,max,num,cp,numTables;
         
-        String tabla = jTextField1.getText();//nombre de tabla o tablas
-        int min = Integer.parseInt(jTextField2.getText());//minima edad
-        int max = Integer.parseInt(jTextField3.getText());//maxima edad
+        
+        
         String sex = jTextField4.getText();//man o woman
-        int num = Integer.parseInt(jTextField5.getText());//numero de personas
-        int cp = Integer.parseInt(jTextField7.getText());//numero de CP aleatorios
-        int numTables = Integer.parseInt(jTextField6.getText());//numero de tablas
+        String tabla = jTextField1.getText();//nombre de tabla o tablas
+       
+        
+       
+        try {
+                min = Integer.parseInt(jTextField2.getText());//minima edad
+                max = Integer.parseInt(jTextField3.getText());//maxima edad
+                num = Integer.parseInt(jTextField5.getText());//numero de personas
+                cp = Integer.parseInt(jTextField7.getText());//numero de CP aleatorios
+                numTables = Integer.parseInt(jTextField6.getText());//numero de tablas
+        } catch (Exception ex) {
+            min=0;
+            max=100;
+            num=100;
+            cp=10;
+            numTables=10;
+        }
         boolean real=jRadioButton2.isSelected();
        
          

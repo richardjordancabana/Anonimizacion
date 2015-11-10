@@ -142,7 +142,7 @@ public class MySql {
                 
                 int val =  ((Number) resultSet.getObject(1)).intValue();
                 if(mensaje)
-                JOptionPane.showMessageDialog(null, "El valor de K es:" + val);
+                     JOptionPane.showMessageDialog(null, "El valor de K es:" + val);
                 return val;
                
             }
@@ -228,30 +228,36 @@ public class MySql {
          double p18 = 356755/total;//90-94
          double p19 = 94038/total;//95+
          
+         int[] t=new int[20];
+         t[0]=(int) (p0*num);
+         t[1]=(int) (p1*num);
+         t[2]=(int) (p2*num);
+         t[3]=(int) (p3*num);
+         t[4]=(int) (p4*num);
+         t[5]=(int) (p5*num);
+         t[6]=(int) (p6*num);
+         t[7]=(int) (p7*num);
+         t[8]=(int) (p8*num);
+         t[9]=(int) (p9*num);
+         t[10]=(int) (p10*num);
+         t[11]=(int) (p11*num);
+         t[12]=(int) (p12*num);
+         t[13]=(int) (p13*num);
+         t[14]=(int) (p14*num);
+         t[15]=(int) (p15*num);
+         t[16]=(int) (p16*num);
+         t[17]=(int) (p17*num);
+         t[18]=(int) (p18*num);
+         t[19]=(int) (p19*num);
          
+         int resto=num -(t[0]+t[1]+t[2]+t[3]+t[4]+t[5]+t[6]+t[7]+t[8]+t[9]+t[10]+t[11]+t[12]+t[13]+t[14]+t[15]+t[16]+t[17]+t[18]+t[19]);
+         //lo añadimos por ejermplo a un grupo.
+         t[19]=t[19]+resto;
          
+         //hombres mujeres
+         double hombres=0.4914048628566182;//49%
+         double mujeres =0.5085951371433818;//51%
          
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         int age=0;
          
          int a=28000;
          String[] cp = new String[CP];
@@ -259,32 +265,51 @@ public class MySql {
          {
              cp[i]=Integer.toString(a+i);
          }
-          
+         
+         
          Random r = new Random();
-         String[] sentencias = new String[num];
          String genre;
          if(sex.equals("man"))
              genre="man";
          else genre="woman";
          
-         for(int i =0; i<num;i++)
+        String[] sentencias = new String[num];
+        
+        int[] edades=new int[num] ;
+        int k=0;
+        int min=0;
+         for(int i=0;i<20;i++){
+             for(int j=0;j<t[i];j++)
+             {
+                 int n=r.nextInt(5);
+                 edades[k]=min+n;
+                 k++;
+                 
+                 
+             }
+             min=min+5;
+         }
+         
+         
+         
+          for(int i =0; i<num;i++)
          {
+            int aux=r.nextInt(100);
+            String code=cp[aux%cp.length];
              
-             int n=r.nextInt(28);
-            
-             String code=cp[n%cp.length];
-             
-             if(sex.equals("") && (n % 2==0))
+             if(sex.equals("") && (aux >=0)&& (aux<=48))//49%
                  genre="man";
-             if(sex.equals("") && (n % 2==1))
+             if(sex.equals("") && (aux >=49)&& (aux<=99))//51%
                  genre="woman";
              sentencias[i]="INSERT INTO "+ table + " VALUES("
                     + i + ","
-                    + age + ","
+                    + edades[i] + ","
                     + "\"" + code + "\""+ ","
                     + "\"" + genre + "\")" ;
   
          }
+         
+         
          
          //crear tabla y ejecutar sentencias
          
