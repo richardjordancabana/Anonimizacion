@@ -201,6 +201,103 @@ public class MySql {
     }
     
     
+    public void generateResource(String table,int numResource,int numPersons, int min, int max) {
+        
+        
+        int[][] recursos=new int[numResource][2];
+        Random n=new Random();
+        
+        for(int i=0;i<numResource;i++)
+            recursos[i][0]=i;
+        
+        for(int i=0;i<numResource;i++)
+        {
+            int aux=n.nextInt(max-min+1);
+            recursos[i][1]=aux;
+            
+        }
+        int contador=0;
+        
+        for(int i=0;i<numResource;i++)
+        {
+            contador=contador+recursos[i][1];
+            
+        }
+        int j=0;
+        while(contador < numPersons)
+        {
+            recursos[j][1]++;
+            contador++;
+            j=(j+1)%numResource;
+        }
+        
+         String[] sentencias = new String[numResource];
+         
+         
+         for(int i =0; i<numResource;i++)
+         {
+             int aux=recursos[i][1];
+             
+             sentencias[i]="INSERT INTO "+ table + " VALUES("
+                    + i + ","
+                    + aux + ")" ;
+  
+         }
+         
+         //crear tabla y ejecutar sentencias
+         
+         
+          try {
+            String Query = "DROP TABLE " + table ;
+
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(Query);
+           // JOptionPane.showMessageDialog(null, "Se borrado la tabla " + table + " de forma exitosa");
+        } catch (SQLException ex) {
+          //  Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+  
+        try {
+            String Query = "CREATE TABLE " + table + ""
+                    + "(RESOURCE int,NUMRESOURCES int)";
+
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(Query);
+           // JOptionPane.showMessageDialog(null, "Se ha creado la tabla " + table + " de forma exitosa");
+        } catch (SQLException ex) {
+            Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        for(int i=0;i<sentencias.length;i++)
+        {
+            
+            try {
+            
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(sentencias[i]);
+           // JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en el almacenamiento de datos");
+        }
+            
+        }
+        
+        
+    }
+    public void generateResources(int numTables,String table,int numResource,int numPersons, int min, int max) {
+        
+         for(int i =0;i<numTables;i++)
+         {
+             String name=table+i+"_resource";
+             generateResource(name,numResource,numPersons,min,max);
+         }
+        
+        
+        
+    }
+    
+    
      //genera tablas de la forma ID,EDAD,CP,GENERO poblacion Española
      public void generateTableSpain(String table,int num, int CP,String sex) {
         
