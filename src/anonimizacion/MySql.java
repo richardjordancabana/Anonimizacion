@@ -213,7 +213,7 @@ public class MySql {
         for(int i=0;i<numResource;i++)
         {
             int aux=n.nextInt(max-min+1);
-            recursos[i][1]=aux;
+            recursos[i][1]=min+aux;
             
         }
         int contador=0;
