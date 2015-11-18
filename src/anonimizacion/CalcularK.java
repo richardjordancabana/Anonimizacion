@@ -24,6 +24,8 @@ public class CalcularK extends javax.swing.JFrame {
             
     public CalcularK() {
         initComponents();
+        this.setTitle("Get K-level");
+        this.setLocationRelativeTo(null);
     }
 
     /**

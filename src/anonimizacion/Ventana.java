@@ -19,9 +19,12 @@ public class Ventana extends javax.swing.JFrame {
     CalcularK ck;
     GenerateTable gt;
     GenerateResources gr;
+    AssignAppointments aa;
     
     public Ventana() {
         initComponents();
+        this.setTitle("Anonymization");
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -38,6 +41,7 @@ public class Ventana extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,6 +84,14 @@ public class Ventana extends javax.swing.JFrame {
             }
         });
 
+        jButton6.setText("Assign Apointments");
+        jButton6.setEnabled(false);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -90,13 +102,17 @@ public class Ventana extends javax.swing.JFrame {
                         .addGap(168, 168, 168)
                         .addComponent(jButton4))
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(141, 141, 141)
+                        .addComponent(jButton3))
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(135, 135, 135)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton5)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jButton1)
-                                .addComponent(jButton2)
-                                .addComponent(jButton3)))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton6)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jButton5)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jButton1)
+                                    .addComponent(jButton2))))))
                 .addContainerGap(134, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -106,11 +122,13 @@ public class Ventana extends javax.swing.JFrame {
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jButton5)
-                .addGap(11, 11, 11)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                .addComponent(jButton6)
+                .addGap(28, 28, 28)
                 .addComponent(jButton2)
                 .addContainerGap())
         );
@@ -127,7 +145,7 @@ public class Ventana extends javax.swing.JFrame {
         jButton3.setEnabled(true);
         jButton4.setEnabled(true);
         jButton5.setEnabled(true);
-        
+        jButton6.setEnabled(true);
         //jButton5.setEnabled(true);
         jButton1.setEnabled(false);
         
@@ -157,10 +175,16 @@ public class Ventana extends javax.swing.JFrame {
         gr.password="";
         gr.bbdd="";
         }
+        if(aa!=null){
+        aa.user="";
+        aa.password="";
+        aa.bbdd="";
+        }
         jButton2.setEnabled(false);
         jButton4.setEnabled(false);
         jButton3.setEnabled(false);
         jButton5.setEnabled(false);
+        jButton6.setEnabled(false);
         jButton1.setEnabled(true);
         
         
@@ -196,6 +220,15 @@ public class Ventana extends javax.swing.JFrame {
         gr.setVisible(true);
         
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+         aa = new AssignAppointments();
+        aa.user=dc.user;
+        aa.password=dc.password;
+        aa.bbdd=dc.bbdd;
+        aa.setVisible(true);
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -238,5 +271,6 @@ public class Ventana extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     // End of variables declaration//GEN-END:variables
 }

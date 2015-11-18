@@ -260,7 +260,7 @@ public class MySql {
   
         try {
             String Query = "CREATE TABLE " + table + ""
-                    + "(RESOURCE int,NUMRESOURCES int)";
+                    + "(RESOURCE int,CAPACITY int)";
 
             Statement st = Conexion.createStatement();
             st.executeUpdate(Query);
@@ -349,7 +349,7 @@ public class MySql {
          
          int resto=num -(t[0]+t[1]+t[2]+t[3]+t[4]+t[5]+t[6]+t[7]+t[8]+t[9]+t[10]+t[11]+t[12]+t[13]+t[14]+t[15]+t[16]+t[17]+t[18]+t[19]);
          //lo añadimos por ejermplo a un grupo.
-         t[19]=t[19]+resto;
+         t[0]=t[0]+resto;
          
          //hombres mujeres
          double hombres=0.4914048628566182;//49%
@@ -402,7 +402,9 @@ public class MySql {
                     + i + ","
                     + edades[i] + ","
                     + "\"" + code + "\""+ ","
-                    + "\"" + genre + "\")" ;
+                    + "\"" + genre + "\"" + ","
+                    + "-1" + ","
+                    + "-1" + ")" ;
   
          }
          
@@ -424,7 +426,7 @@ public class MySql {
   
         try {
             String Query = "CREATE TABLE " + table + ""
-                    + "(ID VARCHAR(15),AGE int,CP VARCHAR(10), SEX VARCHAR(100))";
+                    + "(ID VARCHAR(15),AGE int,CP VARCHAR(10), SEX VARCHAR(100),REC_RAND int, REC_INTELLIGENT int)";
 
             Statement st = Conexion.createStatement();
             st.executeUpdate(Query);
@@ -493,7 +495,9 @@ public class MySql {
                     + i + ","
                     + age + ","
                     + "\"" + code + "\""+ ","
-                    + "\"" + genre + "\")" ;
+                    + "\"" + genre + "\"" + ","
+                    + "-1" + ","
+                    + "-1" + ")" ;
   
          }
          
@@ -513,7 +517,7 @@ public class MySql {
   
         try {
             String Query = "CREATE TABLE " + table + ""
-                    + "(ID VARCHAR(15),AGE int,CP VARCHAR(10), SEX VARCHAR(100))";
+                    + "(ID VARCHAR(15),AGE int,CP VARCHAR(10), SEX VARCHAR(100),REC_RAND int, REC_INTELLIGENT int)";
 
             Statement st = Conexion.createStatement();
             st.executeUpdate(Query);
