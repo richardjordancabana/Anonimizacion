@@ -5,6 +5,9 @@
  */
 package anonimizacion;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Richard
@@ -149,6 +152,13 @@ public class AssignAppointments extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        
+        this.setVisible(false);
+        jTextField1.setText("");
+        jTextField2.setText("");
+        jTextField3.setText("");
+        jTextField4.setText("");
+        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -160,6 +170,18 @@ public class AssignAppointments extends javax.swing.JFrame {
         String resourceName= jTextField3.getText();
         int numTablesResource= Integer.parseInt(jTextField4.getText());
         
+         MySql db = new MySql();
+        try {
+            db.MySQLConnection(user,password,bbdd);
+        } catch (Exception ex) {
+            Logger.getLogger(GenerateTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+            if(numTables==1)
+                  db.assignAppointment(tableName,resourceName);
+            else db.assignAppointments(numTables,tableName,numTablesResource,resourceName);
+                  db.closeConnection();
+          
         
     }//GEN-LAST:event_jButton1ActionPerformed
 

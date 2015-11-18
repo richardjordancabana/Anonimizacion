@@ -200,7 +200,118 @@ public class MySql {
         
     }
     
+     public void assignAppointment(String nameTable,String nameResource) {
+        //leer tabla de recursos y guardarlo en memoria
+         int[][]citas;
+         int i=0;
+         int j=0;
+         
+         try {
+
+            String Query = "SELECT COUNT(*) FROM " + nameResource ;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                i =  ((Number) resultSet.getObject(1)).intValue();     
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
+        }
+         citas =new int[i][2];
+         int m=0;
+         int n=0;
+         
+         try {
+            String Query = "SELECT * FROM " + nameResource;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+            
+
+            while (resultSet.next()) {
+               m= resultSet.getInt("RESOURCE");
+               n= resultSet.getInt("CAPACITY");
+               citas[m][0]=m;
+               citas[m][1]=n;
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
+        }
+         
+         //algoritmo
+         int numPersons=0;
+          try {
+
+            String Query = "SELECT COUNT(*) FROM " + nameTable ;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                numPersons =  ((Number) resultSet.getObject(1)).intValue();     
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
+        }
+         
+          String[] sentencias = new String[numPersons];
+         Random r = new Random();
+         
+         
+         for(int l =0; l<numPersons;l++)
+         {
+             int aux=r.nextInt(m+1);// m+1
+             
+             while( citas[aux][1]==0)
+              aux=(aux +1 ) % (m+1);
+             
+             citas[aux][1]--;
+             
+             
+             sentencias[l]="UPDATE "+ nameTable + " SET REC_RAND="
+                    + aux + " WHERE ID=" + l;
+                    
+  
+         }
+         
+         
+        
+        for(int l=0;l<sentencias.length;l++)
+        {
+            
+            try {
+            
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(sentencias[l]);
+           // JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en el almacenamiento de datos");
+        }
+            
+        }
+        
+         
+        
+    }
     
+    
+      public void assignAppointments(int numTables,String table,int numResource,String nameResource) {
+        
+         for(int i =0;i<numTables;i++)
+         {
+             String name=table+i+"_resource";
+             String name1=table+i;
+             assignAppointment(name1,name);
+         }
+        
+        
+        
+    }
     public void generateResource(String table,int numResource,int numPersons, int min, int max) {
         
         
