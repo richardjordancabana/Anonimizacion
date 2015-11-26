@@ -21,11 +21,18 @@ public class DatosConexion extends javax.swing.JFrame {
     public String user;//root
     public String password;//""
     public String bbdd;//test
+    public boolean correcto=false;
+    public Ventana v;
     
     public DatosConexion() {
+        
         initComponents();
         this.setTitle("Connect To Database");
         this.setLocationRelativeTo(null);
+    }
+    public void setV(Ventana v)
+    {
+        this.v=v;
     }
 
     /**
@@ -44,6 +51,7 @@ public class DatosConexion extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         jTextField3 = new javax.swing.JTextField();
         jPasswordField1 = new javax.swing.JPasswordField();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -66,6 +74,13 @@ public class DatosConexion extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setText("Cancel");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -81,11 +96,13 @@ public class DatosConexion extends javax.swing.JFrame {
                     .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
                     .addComponent(jPasswordField1)
                     .addComponent(jTextField3))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(168, 168, 168)
+                .addGap(123, 123, 123)
                 .addComponent(jButton1)
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addGap(58, 58, 58)
+                .addComponent(jButton2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -103,7 +120,9 @@ public class DatosConexion extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(27, 27, 27)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -123,7 +142,9 @@ public class DatosConexion extends javax.swing.JFrame {
          bbdd = jTextField3.getText();    
         try {
             db.MySQLConnection(user, password, bbdd);
+            v.habilitar();
         } catch (Exception ex) {
+            v.deshabilitar();
             Logger.getLogger(DatosConexion.class.getName()).log(Level.SEVERE, null, ex);
         }
         db.closeConnection();
@@ -131,6 +152,21 @@ public class DatosConexion extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        
+        this.setVisible(false);
+        jTextField3.setText("");
+        jTextField1.setText("");
+        jPasswordField1.setText("");
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    public boolean correcto(){
+        return correcto;
+    }
+    
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -168,6 +204,7 @@ public class DatosConexion extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

@@ -58,7 +58,7 @@ public class MySql {
      public void closeConnection() {
         try {
             Conexion.close();
-            JOptionPane.showMessageDialog(null, "It has completed the connection to the server");
+            JOptionPane.showMessageDialog(null, "Connection completed!!");
         } catch (SQLException ex) {
             Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -159,7 +159,7 @@ public class MySql {
         
         int max=0;
         int min=0;
-        int media=0;
+        float media=0;
         int[] ks= new int[num];//se guardan los K
         
         for(int i=0;i<num;i++)
