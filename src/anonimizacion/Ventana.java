@@ -153,14 +153,7 @@ public class Ventana extends javax.swing.JFrame {
        
         dc = new DatosConexion();
         dc.setVisible(true);
-        dc.setV(this);
-        //Comprobar que la conezion es correcta para habilitar las opciones
-        
-            
-            
-        
-        
-        
+        dc.setV(this); 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

@@ -50,9 +50,6 @@ public class MySql {
             Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
-    
   
     //cerrar la conexión
      public void closeConnection() {
@@ -126,9 +123,7 @@ public class MySql {
             JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
         }
     }
-      
-      
-      
+       
     public int getK(String table_name,String campos,boolean mensaje) {
         try {
             
@@ -142,19 +137,18 @@ public class MySql {
                 
                 int val =  ((Number) resultSet.getObject(1)).intValue();
                 if(mensaje)
-                     JOptionPane.showMessageDialog(null, "El valor de K es:" + val);
+                     JOptionPane.showMessageDialog(null, "The K value is: " + val);
                 return val;
                
             }
 
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
+            JOptionPane.showMessageDialog(null, "Error getting data!");
         }
         return 0;
     }
     
-    
-    
+ 
     public void getKs(int num,String table_name,String campos) {
         
         int max=0;
@@ -200,6 +194,107 @@ public class MySql {
         
     }
     
+    
+     public void assignAppointmentInt(String nameTable,String nameResource,String campos) {
+        //Q=Qnumero de cuasi id diferentes.
+         int Q =0;
+          try {
+            
+            //SELECT cp,SEX,COUNT(*) FROM `t0` GROUP BY cp,SEX si se quiere saber el cuasi
+            String Query = "SELECT count(CUENTA) FROM  (select count(*) as cuenta from " + nameTable+" GROUP BY "+ campos+" ) tabla";
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                
+                int val =  ((Number) resultSet.getObject(1)).intValue();
+                Q=val;
+               
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error getting data!");
+        }
+          
+          //qf=Array [1,Q] frecuencia de cada cuasi ,el k sería el menor de todos estos
+          
+          int[] qf=new int[Q+1];
+          int i=1;
+          int j=0;
+          try {
+
+            String Query = "SELECT COUNT(*) FROM " + nameTable+" GROUP BY "+ campos  ;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                j =  ((Number) resultSet.getObject(1)).intValue();    
+                qf[i]=j;
+                i++;
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error getting data.");
+        }
+          
+          //R=nº recursos (filas de  recursos).
+         int R=0;
+         try {
+
+            String Query = "SELECT COUNT(*) FROM " + nameResource ;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                R =  ((Number) resultSet.getObject(1)).intValue();     
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error getting data.");
+        }
+          //RC CAPACIDAD DE CADA RECURSO.[1,R]
+          int[] rc= new int[R+1];
+          i=1;
+          j=0;
+          try {
+            String Query = "SELECT * FROM " + nameResource;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+            
+
+            while (resultSet.next()) {
+               j= resultSet.getInt("CAPACITY");
+               rc[i]=j;
+              i++;
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error getting data.");
+        }
+         
+      
+        
+    }
+    
+    
+      public void assignAppointmentsInt(int numTables,String table,int numResource,String nameResource,String campos) {
+        
+         for(int i =0;i<numTables;i++)
+         {
+             String name=table+i+"_resource";
+             String name1=table+i;
+             assignAppointmentInt(name1,name,campos);
+         }
+        
+        
+        
+    }
+    
+    
      public void assignAppointment(String nameTable,String nameResource) {
         //leer tabla de recursos y guardarlo en memoria
          int[][]citas;
@@ -222,6 +317,7 @@ public class MySql {
         }
          citas =new int[i][2];
          int m=0;
+         int p;
          int n=0;
          
          try {
@@ -233,9 +329,10 @@ public class MySql {
 
             while (resultSet.next()) {
                m= resultSet.getInt("RESOURCE");
+               p=m-1;
                n= resultSet.getInt("CAPACITY");
-               citas[m][0]=m;
-               citas[m][1]=n;
+               citas[p][0]=m;
+               citas[p][1]=n;
             }
 
         } catch (SQLException ex) {
@@ -265,16 +362,16 @@ public class MySql {
          
          for(int l =0; l<numPersons;l++)
          {
-             int aux=r.nextInt(m+1);// m+1
+             int aux=r.nextInt(m);// m+1
              
              while( citas[aux][1]==0)
-              aux=(aux +1 ) % (m+1);
+              aux=(aux +1 ) % (m);
              
              citas[aux][1]--;
              
              
              sentencias[l]="UPDATE "+ nameTable + " SET REC_RAND="
-                    + aux + " WHERE ID=" + l;
+                    + citas[aux][0] + " WHERE ID=" + l;
                     
   
          }
@@ -348,9 +445,10 @@ public class MySql {
          for(int i =0; i<numResource;i++)
          {
              int aux=recursos[i][1];
+             int h=i+1;
              
              sentencias[i]="INSERT INTO "+ table + " VALUES("
-                    + i + ","
+                    + h + ","
                     + aux + ")" ;
   
          }
@@ -597,7 +695,7 @@ public class MySql {
              int n=r.nextInt(aux);
              int age=min+n;
              String code=cp[n%cp.length];
-             
+             n=r.nextInt(aux);
              if(sex.equals("") && (n % 2==0))
                  genre="man";
              if(sex.equals("") && (n % 2==1))
