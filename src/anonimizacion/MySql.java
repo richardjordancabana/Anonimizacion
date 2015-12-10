@@ -276,6 +276,125 @@ public class MySql {
             JOptionPane.showMessageDialog(null, "Error getting data.");
         }
          
+          
+          
+          
+      //creamos matriz de ejemplo o la que seria solucion e implementamos la actualizacion
+          //en su tabla correspondiente
+          
+          int [][] matriz = {{2,4,4},{6,6,9},{8,10,12}};
+          
+        
+          //leer la tabla de las frecuencias de cada cuasi con el cuasi valor incluido.
+          campos = campos.replace("\n","");
+          String[] atributos=campos.split(",");
+          int numAtributos=atributos.length;
+          String[][] cuasis= new String[Q+1][numAtributos+1];
+          String consulta=campos+",";
+          
+          
+          
+          int k=1;
+          try {
+
+            String Query = "SELECT "+consulta+"COUNT(*) FROM " + nameTable+" GROUP BY "+ campos  ;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                int z=0;
+                for(int x=0;x<numAtributos;x++)
+                {
+                    cuasis[k][z]=resultSet.getString(atributos[x]);
+                    z++;
+                }
+                cuasis[k][z]=resultSet.getString("COUNT(*)");
+                k++;
+                
+            }
+            
+            /*
+                Cp  sex count
+            0                   
+            1   2800 M  3
+            2   2801 W  4
+            3   2802 M  1
+            
+            */
+            
+            
+            
+            
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error getting data.");
+        }
+          
+          int total=0;
+          for (int x=0; x < matriz.length; x++) {
+             for (int y=0; y < matriz[x].length; y++) {
+                total=total+ matriz[x][y];
+                 
+                 
+                 
+                }
+            }  
+          //habra que adaptar segun los indices, en este caso la matriz empieza en 0,0 y cusais en 1
+          String[] sentens=new String[total];
+  
+          String campo="";
+         
+          for(int u=0;u<total;u++)
+          {
+              
+              
+              for (int x=0; x < matriz.length; x++) {
+                 for (int y=0; y < matriz[x].length; y++) {
+                    while(matriz[x][y]!=0)           
+                    {
+                        int recurso =y+1;
+                        
+                        sentens[u]="UPDATE "+ nameTable + " SET REC_INTELLIGENT=" + recurso + " WHERE ";
+                        for (int a=0;a<numAtributos;a++)
+                        {
+                            sentens[u]=sentens[u]+ atributos[a]+"= "+"\""+cuasis[x+1][a]+"\""+" AND ";
+                        }  
+                        sentens[u] = sentens[u].substring(0, sentens[u].length() - 5);
+                        sentens[u]=sentens[u]+" AND REC_INTELLIGENT= -1 LIMIT 1";
+                        u++;
+                        matriz[x][y]--;
+                        
+                    }
+                    
+                    
+                    //se puede mejorar poniendo justo el limit adecuado
+                 
+                }
+            }  
+  
+          }
+          
+           for(int l=0;l<sentens.length;l++)
+        {
+            
+            try {
+            
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(sentens[l]);
+           // JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en el almacenamiento de datos");
+        }
+          
+        }
+          
+          
+          
+          
+          
+          
+          
       
         
     }

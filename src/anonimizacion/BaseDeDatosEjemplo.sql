@@ -31,5 +31,5 @@ SELECT CONCAT('drop table ',table_name,'; ')
 FROM information_schema.tables
 WHERE table_schema = 'test';
 
-SELECT count(*) FROM `t0` GROUP BY cp,SEX
+SELECT cp,sex,count(*) FROM `t0` GROUP BY cp,SEX
 SELECT COUNT(CUENTA) FROM (SELECT count(*) AS CUENTA FROM `t0` GROUP BY cp,SEX) TABLA
