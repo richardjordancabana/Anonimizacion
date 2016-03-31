@@ -5,6 +5,16 @@
  */
 package anonimizacion;
 
+
+import org.chocosolver.solver.ResolutionPolicy;
+import org.chocosolver.solver.Solver;
+import org.chocosolver.solver.constraints.IntConstraintFactory;
+import org.chocosolver.solver.constraints.LogicalConstraintFactory;
+import org.chocosolver.solver.trace.Chatterbox;
+import org.chocosolver.solver.variables.IntVar;
+import org.chocosolver.solver.variables.Variable;
+import org.chocosolver.solver.variables.VariableFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -195,6 +205,138 @@ public class MySql {
     }
     
     
+    
+    int[][] getKMin(int Q, int[] qf, int R, int[] rc, int[] v)
+    {
+
+        int[][] total=null;
+        
+        int max1=0;
+        for(int i=1; i<Q+1;i++)
+            if(qf[i]>max1)
+                max1=qf[i];//frec maxima
+        
+
+        int max2=0;
+        for(int i=1; i<Q+1;i++)
+            if(rc[i]>max2)
+                max2=rc[i];//recuso maximo
+        
+        int max=0;
+        if (max1<max2)
+                max=max1;
+        else max=max2; //maximo de los maximos
+        //COTA MINIMA DE LOS MAXIMOS
+       
+        int p=0;
+        for(int i=0; i<Q+1;i++)
+           p=p+qf[i]; //poblacion total
+     
+        v= new int[max+1];//vector de anonimicidad TAMAÑO MIN DE LOS MAX
+        for(int i=0; i<max+1;i++)
+           v[i]=0;
+        int suma=0;
+        for(int i=0; i<max+1;i++)
+           suma=suma+v[i]*i;
+           
+        IntVar[] vchoco=null;   
+        IntVar k;
+        int l=1; //nivel
+        IntVar[] a;
+        IntVar[] cuenta;
+        int kvalor=0;
+        while (suma != p){
+            
+            Solver solver = new Solver("Minimaze K");
+            a = new IntVar[Q * R];//matriz plana
+            for (int i = 0; i < Q; i++) {
+                for (int j = 0; j < R; j++) {
+                    a[i * R + j] = VariableFactory.enumerated("a" + i + "_" + j, 0, max, solver);
+                }
+             }
+            
+            //restricciones
+            IntVar[] fila = null;
+            IntVar[] columna = null;
+            //C1
+             for (int i = 0; i < Q; i++) {
+                 fila = new IntVar[R];
+                for (int j = 0; j < R; j++) {
+                    
+                    fila[j]=a[i*R+j];
+                }
+                
+                IntVar sum=VariableFactory.enumerated(qf[i+1]+"", qf[i+1], qf[i+1], solver);//TRUCO?
+                solver.post(IntConstraintFactory.sum(fila,sum));
+             }
+             //C2
+             for (int i = 0; i < R; i++) {
+                 columna = new IntVar[Q];
+                for (int j = 0; j < Q; j++) {
+                    
+                    columna[j]=a[i+j*R];
+                }
+                IntVar sum1=VariableFactory.enumerated(rc[i+1]+"", rc[i+1], rc[i+1], solver);
+                solver.post(IntConstraintFactory.sum(columna,"<=",sum1));
+             }
+            
+             //C3
+             if(l!=1){
+                vchoco= VariableFactory.enumeratedArray("vchoco" ,max+1, 0, max, solver);
+                for (int i=1;i<=l;i++)
+                 {
+                     solver.post(IntConstraintFactory.arithm(vchoco[i], "=", v[i])); // se supone q los ceros no se consideran
+                 }
+                
+            }
+  
+             for(int i =1;i<l;i++)
+                solver.post(IntConstraintFactory.count(i,a,vchoco[i]));
+
+             
+             //C4
+             k=VariableFactory.enumerated("k", 0, max, solver);
+             solver.post(IntConstraintFactory.count(l,a,k));
+            //  solver.post(IntConstraintFactory.arithm(vchoco[l], "=", k));
+             //minimizar k
+             solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, k);
+             
+               if(solver.findSolution()){
+            do{
+            Chatterbox.printStatistics(solver);
+            Chatterbox.printSolutions(solver);
+            kvalor =k.getValue();
+           
+            total=new int[Q][R];
+               
+               for (int i = 0; i < Q; i++) {
+                for (int j = 0; j < R; j++) {
+                   total[i][j] = a[i * R + j].getValue();
+                     }
+                 }
+            
+            
+            //OBTENER K Y AÑADIRLO A V.
+            }while(solver.nextSolution());
+            }
+             
+         
+             v[l]=kvalor;
+             l++;
+             suma=0;
+             for(int i=0; i<max+1;i++)
+                   suma=suma+v[i]*i;
+            // break;
+        }
+        
+        return total;
+    
+    }
+    
+    
+    
+    
+    
      public void assignAppointmentInt(String nameTable,String nameResource,String campos) {
         //Q=Qnumero de cuasi id diferentes.
          int Q =0;
@@ -282,8 +424,12 @@ public class MySql {
       //creamos matriz de ejemplo o la que seria solucion e implementamos la actualizacion
           //en su tabla correspondiente
           
-          int [][] matriz = {{2,4,4},{6,6,9},{8,10,12}};
+          int [][] matriz = new int[Q][R];
+          int[] v=null;
+          matriz=getKMin(Q,qf,R,rc,v);
           
+          
+      
         
           //leer la tabla de las frecuencias de cada cuasi con el cuasi valor incluido.
           campos = campos.replace("\n","");
@@ -414,7 +560,7 @@ public class MySql {
     }
     
     
-     public void assignAppointment(String nameTable,String nameResource) {
+     public void assignAppointment(String nameTable,String nameResource,String campos) {
         //leer tabla de recursos y guardarlo en memoria
          int[][]citas;
          int i=0;
@@ -511,18 +657,20 @@ public class MySql {
             
         }
         
+        //extraer matriz de aleatorio
+       
          
         
     }
     
     
-      public void assignAppointments(int numTables,String table,int numResource,String nameResource) {
+      public void assignAppointments(int numTables,String table,int numResource,String nameResource, String campos) {
         
          for(int i =0;i<numTables;i++)
          {
              String name=table+i+"_resource";
              String name1=table+i;
-             assignAppointment(name1,name);
+             assignAppointment(name1,name,campos);
          }
         
         

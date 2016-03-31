@@ -220,8 +220,8 @@ public class AssignAppointments extends javax.swing.JFrame {
         }
         if(!intelligent){
             if(numTables==1)
-                  db.assignAppointment(tableName,resourceName);
-            else db.assignAppointments(numTables,tableName,numTablesResource,resourceName);
+                  db.assignAppointment(tableName,resourceName,atributos);
+            else db.assignAppointments(numTables,tableName,numTablesResource,resourceName,atributos);
                   db.closeConnection();
         }
         else{
