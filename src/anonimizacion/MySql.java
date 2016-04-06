@@ -19,6 +19,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +29,29 @@ import javax.swing.JOptionPane;
  *
  * @author richard
  */
+
+final class MyResult {
+    private final int[][] first;
+    private final int[] second;
+
+    public MyResult(int[][] first, int[] second) {
+        this.first = first;
+        this.second = second;
+    }
+
+    public int[][] getFirst() {
+        return first;
+    }
+
+    public int[] getSecond() {
+        return second;
+    }
+}
+
+
+
+
+
 
 public class MySql {
     
@@ -206,7 +230,7 @@ public class MySql {
     
     
     
-    int[][] getKMin(int Q, int[] qf, int R, int[] rc, int[] v)
+    MyResult getKMin(int Q, int[] qf, int R, int[] rc, int[] v)
     {
 
         int[][] total=null;
@@ -329,14 +353,413 @@ public class MySql {
             // break;
         }
         
-        return total;
+        return new  MyResult(total,v);
     
     }
     
+     public void assignAppointmentsComplete(int numTables,String nameTable,String campos){
+           for(int i =0;i<numTables;i++)
+         {
+             String name=nameTable+i+"_resource";
+             String name1=nameTable+i;
+             assignAppointmentComplete(name1,name,campos);
+         }
+     }
+    
+    
+     public void assignAppointmentComplete(String nameTable,String nameResource,String campos){
+//PARTE INTELIGENTE         
+         //Q=Qnumero de cuasi id diferentes.
+         int Q =0;
+          try {
+            //SELECT cp,SEX,COUNT(*) FROM `t0` GROUP BY cp,SEX si se quiere saber el cuasi
+            String Query = "SELECT count(CUENTA) FROM  (select count(*) as cuenta from " + nameTable+" GROUP BY "+ campos+" ) tabla";
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+            while (resultSet.next()) {         
+                int val =  ((Number) resultSet.getObject(1)).intValue();
+                Q=val;           
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error getting data!");
+        }
+         
+          //qf=Array [1,Q] frecuencia de cada cuasi ,el k sería el menor de todos estos
+          
+          int[] qf=new int[Q+1];
+          int i=1;
+          int j=0;
+          try {
+
+            String Query = "SELECT COUNT(*) FROM " + nameTable+" GROUP BY "+ campos  ;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                j =  ((Number) resultSet.getObject(1)).intValue();    
+                qf[i]=j;
+                i++;
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error getting data.");
+        }
+          
+          //R=nº recursos (filas de  recursos).
+         int R=0;
+         try {
+
+            String Query = "SELECT COUNT(*) FROM " + nameResource ;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                R =  ((Number) resultSet.getObject(1)).intValue();     
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error getting data.");
+        }
+          //RC CAPACIDAD DE CADA RECURSO.[1,R]
+          int[] rc= new int[R+1];
+          i=1;
+          j=0;
+          try {
+            String Query = "SELECT * FROM " + nameResource;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+            
+
+            while (resultSet.next()) {
+               j= resultSet.getInt("CAPACITY");
+               rc[i]=j;
+              i++;
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error getting data.");
+        }   
+      //creamos matriz de ejemplo o la que seria solucion e implementamos la actualizacion
+          //en su tabla correspondiente
+          
+          int [][] matriz = new int[Q][R];
+          int [][] matriz1 = new int[Q][R];
+          int[] v=null;
+          MyResult r1=getKMin(Q,qf,R,rc,v);
+          
+          matriz=r1.getFirst();
+          v=r1.getSecond();
+          
+          for(int xx=0;xx<Q;xx++)
+              for(int yy=0;yy<R;yy++)
+                  matriz1[xx][yy]=matriz[xx][yy];
+              
+          
+          
+          
+      
+        
+          //leer la tabla de las frecuencias de cada cuasi con el cuasi valor incluido.
+          campos = campos.replace("\n","");
+          String[] atributos=campos.split(",");
+          int numAtributos=atributos.length;
+          String[][] cuasis= new String[Q+1][numAtributos+1];
+          String consulta=campos+",";
+          
+          
+          
+          int k=1;
+          try {
+
+            String Query = "SELECT "+consulta+"COUNT(*) FROM " + nameTable+" GROUP BY "+ campos  ;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                int z=0;
+                for(int x=0;x<numAtributos;x++)
+                {
+                    cuasis[k][z]=resultSet.getString(atributos[x]);
+                    z++;
+                }
+                cuasis[k][z]=resultSet.getString("COUNT(*)");
+                k++;
+                
+            }
+            
+            /*
+                Cp  sex count
+            0                   
+            1   2800 M  3
+            2   2801 W  4
+            3   2802 M  1
+            
+            */
+            
+            
+            
+            
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error getting data.");
+        }
+          
+          int total=0;
+          for (int x=0; x < matriz.length; x++) {
+             for (int y=0; y < matriz[x].length; y++) {
+                total=total+ matriz[x][y];    
+                }
+            }  
+          //habra que adaptar segun los indices, en este caso la matriz empieza en 0,0 y cusais en 1
+          String[] sentens=new String[total];
+  
+          String campo="";
+         
+          for(int u=0;u<total;u++)
+          {
+              
+              
+              for (int x=0; x < matriz.length; x++) {
+                 for (int y=0; y < matriz[x].length; y++) {
+                    while(matriz[x][y]!=0)           
+                    {
+                        int recurso =y+1;
+                        
+                        sentens[u]="UPDATE "+ nameTable + " SET REC_INTELLIGENT=" + recurso + " WHERE ";
+                        for (int a=0;a<numAtributos;a++)
+                        {
+                            sentens[u]=sentens[u]+ atributos[a]+"= "+"\""+cuasis[x+1][a]+"\""+" AND ";
+                        }  
+                        sentens[u] = sentens[u].substring(0, sentens[u].length() - 5);
+                        sentens[u]=sentens[u]+" AND REC_INTELLIGENT= -1 LIMIT 1";
+                        u++;
+                        matriz[x][y]--;
+                        
+                    }
+                }
+            }  
+  
+          }
+          
+           for(int l=0;l<sentens.length;l++)
+        {
+            
+            try {
+            
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(sentens[l]);
+           // JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en el almacenamiento de datos");
+        }
+          
+        }
+//FIN PARTE INTELIGENTE
+           
+           
+//PARTE ALEATORIA
+           
+           
+            //leer tabla de recursos y guardarlo en memoria
+         int[][]citas;
+         int x=0;
+         
+         try {
+
+            String Query = "SELECT COUNT(*) FROM " + nameResource ;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                x =  ((Number) resultSet.getObject(1)).intValue();     
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
+        }
+         citas =new int[x][2];
+         int m=0;
+         int p;
+         int n=0;
+         
+         try {
+            String Query = "SELECT * FROM " + nameResource;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+            
+
+            while (resultSet.next()) {
+               m= resultSet.getInt("RESOURCE");
+               p=m-1;
+               n= resultSet.getInt("CAPACITY");
+               citas[p][0]=m;
+               citas[p][1]=n;
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
+        }
+         
+         //algoritmo
+         int numPersons=0;
+          try {
+
+            String Query = "SELECT COUNT(*) FROM " + nameTable ;
+            Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(Query);
+
+            while (resultSet.next()) {
+                numPersons =  ((Number) resultSet.getObject(1)).intValue();     
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en la adquisición de datos");
+        }
+         
+          String[] sentencias = new String[numPersons];
+         Random r = new Random();
+         
+         
+         for(int l =0; l<numPersons;l++)
+         {
+             int aux=r.nextInt(m);// m+1
+             
+             while( citas[aux][1]==0)
+              aux=(aux +1 ) % (m);
+             
+             citas[aux][1]--;
+             
+             
+             sentencias[l]="UPDATE "+ nameTable + " SET REC_RAND="
+                    + citas[aux][0] + " WHERE ID=" + l;
+                    
+  
+         }
+        for(int l=0;l<sentencias.length;l++)
+        {
+            
+            try {
+            
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(sentencias[l]);
+           // JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en el almacenamiento de datos");
+        }
+            
+        }
+        
+     //hallar a y v de aleatorio
+        //Q Y R lo tenemos ya
+        String[] sentensSelect=new String[total];
+        
+        int contador=0;
+        String campos1="";
+        int[][] aRandom= new int[Q][R];
+        
+        for(int xx=0;xx<Q;xx++){
+            
+           
+            for (int a=0;a<numAtributos;a++)
+                 campos1=atributos[a]+"= "+"\""+cuasis[xx+1][a]+"\""+" AND ";
+            campos1=campos1+" REC_RAND = ";
+            for(int yy=0;yy<R;yy++){
+                int aux=yy+1;
+                campos1=campos1+aux;
+                String querySelect= " SELECT COUNT(*) FROM " + nameTable + " WHERE "+ campos1 + " ";
+             
+            try{
+              Statement st = Conexion.createStatement();
+            java.sql.ResultSet resultSet;
+            resultSet = st.executeQuery(querySelect);
+            while (resultSet.next()) {         
+                    int val =  ((Number) resultSet.getObject(1)).intValue();
+                    aRandom[xx][yy]=val;           
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null, "Error getting data!");
+                }
+            }
+        }
+        
+        //hallar V
+        int maximoA=aRandom[0][0];
+         for(int xx=0;xx<Q;xx++)      
+            for(int yy=0;yy<R;yy++)
+              if(maximoA<aRandom[xx][yy])
+                maximoA=aRandom[xx][yy];
+         
+        int[] vRandom=new int[maximoA+1];    
+        for(int ww=1; ww<=maximoA;ww++)
+            vRandom[ww]=0;
+        for(int ww=1; ww<=maximoA;ww++)
+        {
+            for(int xx=0;xx<Q;xx++){
+             for(int yy=0;yy<R;yy++){
+                 vRandom[aRandom[xx][yy]]++;
+             }  
+            }
+        }
+            
+        //crear tabla y guardar!
+            
+        String nombreTablaV=nameTable+"Vector";
+          try {
+            String Query = "DROP TABLE " + nombreTablaV ;
+
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(Query);
+           // JOptionPane.showMessageDialog(null, "Se borrado la tabla " + table + " de forma exitosa");
+        } catch (SQLException ex) {
+          //  Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+  
+        try {
+            String Query = "CREATE TABLE " + nombreTablaV + ""
+                    + "(VRANDOM VARCHAR(1000),VINTELLIGENT VARCHAR(1000))";
+
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(Query);
+           // JOptionPane.showMessageDialog(null, "Se ha creado la tabla " + table + " de forma exitosa");
+        } catch (SQLException ex) {
+            Logger.getLogger(MySql.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+        
+         try {
+            String sent="INSERT INTO "+ nombreTablaV + " VALUES("
+                    + "\"" + Arrays.toString(vRandom) + "\""+ ","
+                    + "\"" + Arrays.toString(v) + "\"" + ")" ;
+            Statement st = Conexion.createStatement();
+            st.executeUpdate(sent);
+           // JOptionPane.showMessageDialog(null, "Datos almacenados de forma exitosa");
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "Error en el almacenamiento de datos");
+        }
+            
+        
+        
+        
+         
+           
+//FIN PARTE ALEATORIA
+         
+     }
     
     
     
-    
+    //NO FUNCIONA POR LA PAREJA MATRIX
      public void assignAppointmentInt(String nameTable,String nameResource,String campos) {
         //Q=Qnumero de cuasi id diferentes.
          int Q =0;
@@ -426,7 +849,7 @@ public class MySql {
           
           int [][] matriz = new int[Q][R];
           int[] v=null;
-          matriz=getKMin(Q,qf,R,rc,v);
+          //matriz=getKMin(Q,qf,R,rc,v);
           
           
       
@@ -656,9 +1079,8 @@ public class MySql {
         }
             
         }
-        
-        //extraer matriz de aleatorio
        
+          
          
         
     }
