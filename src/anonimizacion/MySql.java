@@ -242,7 +242,7 @@ public class MySql {
         
 
         int max2=0;
-        for(int i=1; i<Q+1;i++)
+        for(int i=1; i<R+1;i++)
             if(rc[i]>max2)
                 max2=rc[i];//recuso maximo
         
@@ -663,17 +663,19 @@ public class MySql {
         
         int contador=0;
         String campos1="";
+        String campos2="";
         int[][] aRandom= new int[Q][R];
         
         for(int xx=0;xx<Q;xx++){
             
-           
+           campos1="";
             for (int a=0;a<numAtributos;a++)
-                 campos1=atributos[a]+"= "+"\""+cuasis[xx+1][a]+"\""+" AND ";
+                 campos1=campos1+atributos[a]+"= "+"\""+cuasis[xx+1][a]+"\""+" AND ";
             campos1=campos1+" REC_RAND = ";
+            campos2=campos1;
             for(int yy=0;yy<R;yy++){
                 int aux=yy+1;
-                campos1=campos1+aux;
+                campos1=campos2+aux;
                 String querySelect= " SELECT COUNT(*) FROM " + nameTable + " WHERE "+ campos1 + " ";
              
             try{
@@ -700,14 +702,13 @@ public class MySql {
         int[] vRandom=new int[maximoA+1];    
         for(int ww=1; ww<=maximoA;ww++)
             vRandom[ww]=0;
-        for(int ww=1; ww<=maximoA;ww++)
-        {
+        
             for(int xx=0;xx<Q;xx++){
              for(int yy=0;yy<R;yy++){
                  vRandom[aRandom[xx][yy]]++;
              }  
             }
-        }
+        vRandom[0]=0;
             
         //crear tabla y guardar!
             

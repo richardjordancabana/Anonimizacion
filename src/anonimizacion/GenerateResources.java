@@ -172,7 +172,7 @@ public class GenerateResources extends javax.swing.JFrame {
         }
        
             if(numTables==1)
-                  db.generateResource(tableName,numResources,numPersons,min,max);
+                  db.generateResource(tableName+"_resource",numResources,numPersons,min,max);
             else db.generateResources(numTables,tableName,numResources,numPersons,min,max);
                   db.closeConnection();
           
