@@ -6,6 +6,9 @@
 package anonimizacion;
 
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import org.chocosolver.solver.ResolutionPolicy;
 import org.chocosolver.solver.Solver;
 import org.chocosolver.solver.constraints.IntConstraintFactory;
@@ -230,9 +233,9 @@ public class MySql {
     
     
     
-    MyResult getKMin(int Q, int[] qf, int R, int[] rc, int[] v)
+    MyResult getKMin(int Q, int[] qf, int R, int[] rc, int[] v,int deep)
     {
-
+        int contador=deep;
         int[][] total=null;
         
         int max1=0;
@@ -269,7 +272,7 @@ public class MySql {
         IntVar[] a;
         IntVar[] cuenta;
         int kvalor=0;
-        while (suma != p){
+        while (suma != p && contador!=0){
             
             Solver solver = new Solver("Minimaze K");
             a = new IntVar[Q * R];//matriz plana
@@ -343,8 +346,10 @@ public class MySql {
             //OBTENER K Y AÑADIRLO A V.
             }while(solver.nextSolution());
             }
+             if(deep==contador)
+             { if(kvalor!=0) contador--;}
+             else contador--;
              
-         
              v[l]=kvalor;
              l++;
              suma=0;
@@ -357,18 +362,28 @@ public class MySql {
     
     }
     
-     public void assignAppointmentsComplete(int numTables,String nameTable,String campos){
+     public void assignAppointmentsComplete(int numTables,String nameTable,String campos, int deep) throws IOException{
            for(int i =0;i<numTables;i++)
          {
              String name=nameTable+i+"_resource";
              String name1=nameTable+i;
-             assignAppointmentComplete(name1,name,campos);
+             assignAppointmentComplete(name1,name,campos,deep);
          }
      }
     
     
-     public void assignAppointmentComplete(String nameTable,String nameResource,String campos){
+     public void assignAppointmentComplete(String nameTable,String nameResource,String campos,int deep) throws IOException{
 //PARTE INTELIGENTE         
+         FileWriter archivo;
+         if (new File("log.txt").exists()==false)
+           archivo=new FileWriter(new File("log.txt"),false);
+              archivo = new FileWriter(new File("log.txt"),true);
+         
+         
+         
+         
+         
+         
          //Q=Qnumero de cuasi id diferentes.
          int Q =0;
           try {
@@ -384,7 +399,7 @@ public class MySql {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error getting data!");
         }
-         
+         archivo.write("Q VALOR: "+Q+"\r\n");
           //qf=Array [1,Q] frecuencia de cada cuasi ,el k sería el menor de todos estos
           
           int[] qf=new int[Q+1];
@@ -406,7 +421,7 @@ public class MySql {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error getting data.");
         }
-          
+          archivo.write("QF VECTOR: "+Arrays.toString(qf)+"\r\n");
           //R=nº recursos (filas de  recursos).
          int R=0;
          try {
@@ -423,6 +438,7 @@ public class MySql {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error getting data.");
         }
+         archivo.write("R VALOR: "+R+"\r\n");
           //RC CAPACIDAD DE CADA RECURSO.[1,R]
           int[] rc= new int[R+1];
           i=1;
@@ -443,16 +459,45 @@ public class MySql {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error getting data.");
         }   
+          archivo.write("RC VECTOR: "+Arrays.toString(rc)+"\r\n");
       //creamos matriz de ejemplo o la que seria solucion e implementamos la actualizacion
           //en su tabla correspondiente
+          archivo.write("LEVEL: "+deep+"\r\n");
           
           int [][] matriz = new int[Q][R];
           int [][] matriz1 = new int[Q][R];
           int[] v=null;
-          MyResult r1=getKMin(Q,qf,R,rc,v);
+          MyResult r1=getKMin(Q,qf,R,rc,v,deep);
           
           matriz=r1.getFirst();
           v=r1.getSecond();
+          archivo.write("v VECTOR: "+Arrays.toString(v)+"\r\n");
+          archivo.write("matriz VECTOR:" +"\r\n");
+        for (int[] matriz2 : matriz) {
+            archivo.write("|");
+            for (int y = 0; y < matriz2.length; y++) {
+                archivo.write(matriz2[y]+"");
+                if (y != matriz2.length - 1) {
+                    archivo.write("\t");
+                }
+            }
+            archivo.write("|");
+            archivo.write("\r\n");
+        }
+          archivo.write("\r\n");
+          
+          int[] v1= new int[v.length];
+          
+           for(int xx=0;xx<Q;xx++){
+             for(int yy=0;yy<R;yy++){
+                 v1[matriz[xx][yy]]++;
+             }  
+            }
+           
+           archivo.write("vReconstructed VECTOR: "+Arrays.toString(v1)+"\r\n");
+           
+          
+          
           
           for(int xx=0;xx<Q;xx++)
               for(int yy=0;yy<R;yy++)
@@ -502,7 +547,17 @@ public class MySql {
             */
             
             
-            
+         archivo.write("cuasi VECTOR: "+"\r\n");   
+         
+         for (int x=1; x < cuasis.length; x++) {
+            archivo.write("|");
+            for (int y=0; y < cuasis[x].length; y++) {
+              archivo.write(cuasis[x][y]);
+              if (y!=cuasis[x].length-1) archivo.write("\t");
+            }
+            archivo.write("|");
+            archivo.write("\r\n");
+          }
             
 
         } catch (SQLException ex) {
@@ -691,6 +746,20 @@ public class MySql {
                 }
             }
         }
+        archivo.write("\r\n");
+        archivo.write("aRandom VECTOR: "+"\r\n");
+        
+        for (int[] aRandom1 : aRandom) {
+            archivo.write("|");
+            for (int y3 = 0; y3 < aRandom1.length; y3++) {
+                archivo.write(aRandom1[y3]+"");
+                if (y3 != aRandom1.length - 1) {
+                    archivo.write("\t");
+                }
+            }
+            archivo.write("|");
+            archivo.write("\r\n");
+        }
         
         //hallar V
         int maximoA=aRandom[0][0];
@@ -709,7 +778,11 @@ public class MySql {
              }  
             }
         vRandom[0]=0;
-            
+        archivo.write("\r\n");
+        archivo.write("vRandom VECTOR: "+Arrays.toString(vRandom)+"\r\n");
+        
+        
+        archivo.close();    
         //crear tabla y guardar!
             
         String nombreTablaV=nameTable+"Vector";
