@@ -493,7 +493,7 @@ public class MySql {
                  v1[matriz[xx][yy]]++;
              }  
             }
-           
+           v1[0]=0;
            archivo.write("vReconstructed VECTOR: "+Arrays.toString(v1)+"\r\n");
            
           
