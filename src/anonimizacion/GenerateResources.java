@@ -5,6 +5,7 @@
  */
 package anonimizacion;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -172,8 +173,16 @@ public class GenerateResources extends javax.swing.JFrame {
         }
        
             if(numTables==1)
-                  db.generateResource(tableName+"_resource",numResources,numPersons,min,max);
-            else db.generateResources(numTables,tableName,numResources,numPersons,min,max);
+                  try {
+                      db.generateResource(tableName+"_resource",numResources,numPersons,min,max);
+        } catch (IOException ex) {
+            Logger.getLogger(GenerateResources.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            else try {
+                db.generateResources(numTables,tableName,numResources,numPersons,min,max);
+        } catch (IOException ex) {
+            Logger.getLogger(GenerateResources.class.getName()).log(Level.SEVERE, null, ex);
+        }
                   db.closeConnection();
           
         

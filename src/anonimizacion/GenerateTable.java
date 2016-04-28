@@ -5,6 +5,7 @@
  */
 package anonimizacion;
 
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -250,8 +251,16 @@ public class GenerateTable extends javax.swing.JFrame {
               }
         else {
              if(numTables==1)
-                  db.generateTable(tabla,num,min,max,cp,sex);
-             else db.generateTables(numTables,tabla,num,min,max,cp,sex);
+                  try {
+                      db.generateTable(tabla,num,min,max,cp,sex);
+             } catch (IOException ex) {
+                 Logger.getLogger(GenerateTable.class.getName()).log(Level.SEVERE, null, ex);
+             }
+             else try {
+                 db.generateTables(numTables,tabla,num,min,max,cp,sex);
+             } catch (IOException ex) {
+                 Logger.getLogger(GenerateTable.class.getName()).log(Level.SEVERE, null, ex);
+             }
                   db.closeConnection();
               }
     }//GEN-LAST:event_jButton1ActionPerformed
