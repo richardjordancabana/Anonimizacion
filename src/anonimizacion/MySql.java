@@ -23,6 +23,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -233,8 +234,10 @@ public class MySql {
     
     
     
-    MyResult getKMin(int Q, int[] qf, int R, int[] rc, int[] v,int deep)
+    MyResult getKMin(int Q, int[] qf, int R, int[] rc, int[] v,int deep) throws IOException
     {
+        
+        
         int contador=deep;
         int[][] total=null;
         
@@ -272,6 +275,13 @@ public class MySql {
         IntVar[] a;
         IntVar[] cuenta;
         int kvalor=0;
+        
+        
+        
+        
+        
+        
+        
         while (suma != p && contador!=0){
             
             Solver solver = new Solver("Minimaze K");
@@ -326,7 +336,35 @@ public class MySql {
              solver.post(IntConstraintFactory.count(l,a,k));
             //  solver.post(IntConstraintFactory.arithm(vchoco[l], "=", k));
              //minimizar k
+             FileWriter archivo;
+            if (new File("log.txt").exists()==false)
+               archivo=new FileWriter(new File("log.txt"),false);
+                  archivo = new FileWriter(new File("log.txt"),true);
+             Calendar fechaActual = Calendar.getInstance();
+             archivo.write((String.valueOf(fechaActual.get(Calendar.DAY_OF_MONTH))
+                    +"/"+String.valueOf(fechaActual.get(Calendar.MONTH)+1)
+                    +"/"+String.valueOf(fechaActual.get(Calendar.YEAR))
+                    +";"+String.valueOf(fechaActual.get(Calendar.HOUR_OF_DAY))
+                    +":"+String.valueOf(fechaActual.get(Calendar.MINUTE))
+                    +":"+String.valueOf(fechaActual.get(Calendar.SECOND)))+";"+"Entrando Choco"+"\r\n");
+             archivo.close();
+             
              solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, k);
+             
+             
+           if (new File("log.txt").exists()==false)
+           archivo=new FileWriter(new File("log.txt"),false);
+              archivo = new FileWriter(new File("log.txt"),true);
+              
+            fechaActual = Calendar.getInstance();
+             archivo.write((String.valueOf(fechaActual.get(Calendar.DAY_OF_MONTH))
+                    +"/"+String.valueOf(fechaActual.get(Calendar.MONTH)+1)
+                    +"/"+String.valueOf(fechaActual.get(Calendar.YEAR))
+                    +";"+String.valueOf(fechaActual.get(Calendar.HOUR_OF_DAY))
+                    +":"+String.valueOf(fechaActual.get(Calendar.MINUTE))
+                    +":"+String.valueOf(fechaActual.get(Calendar.SECOND)))+";"+"Saliendo Choco"+"\r\n");
+             archivo.close();  
+             
              
                if(solver.findSolution()){
             do{
@@ -463,6 +501,7 @@ public class MySql {
       //creamos matriz de ejemplo o la que seria solucion e implementamos la actualizacion
           //en su tabla correspondiente
           archivo.write("LEVEL: "+deep+"\r\n");
+          archivo.close();
           
           int [][] matriz = new int[Q][R];
           int [][] matriz1 = new int[Q][R];
@@ -471,6 +510,11 @@ public class MySql {
           
           matriz=r1.getFirst();
           v=r1.getSecond();
+          
+          if (new File("log.txt").exists()==false)
+           archivo=new FileWriter(new File("log.txt"),false);
+              archivo = new FileWriter(new File("log.txt"),true);
+          
           archivo.write("v VECTOR: "+Arrays.toString(v)+"\r\n");
           archivo.write("matriz VECTOR:" +"\r\n");
         for (int[] matriz2 : matriz) {
@@ -1172,7 +1216,7 @@ public class MySql {
         
         
     }
-    public void generateResource(String table,int numResource,int numPersons, int min, int max) {
+    public void generateResource(String table,int numResource,int numPersons, int min, int max) throws IOException {
         
         
         int[][] recursos=new int[numResource][2];
@@ -1254,10 +1298,24 @@ public class MySql {
         }
             
         }
+        FileWriter archivo;
+        if (new File("log.txt").exists()==false)
+           archivo=new FileWriter(new File("log.txt"),false);
+              archivo = new FileWriter(new File("log.txt"),true);
+              
+        Calendar fechaActual = Calendar.getInstance();
+             archivo.write((String.valueOf(fechaActual.get(Calendar.DAY_OF_MONTH))
+                    +"/"+String.valueOf(fechaActual.get(Calendar.MONTH)+1)
+                    +"/"+String.valueOf(fechaActual.get(Calendar.YEAR))
+                    +";"+String.valueOf(fechaActual.get(Calendar.HOUR_OF_DAY))
+                    +":"+String.valueOf(fechaActual.get(Calendar.MINUTE))
+                    +":"+String.valueOf(fechaActual.get(Calendar.SECOND)))+";"+"Creado Recurso"+"\r\n");
+             archivo.write("nombre: "+table+"\r\n");
+             archivo.close();  
         
         
     }
-    public void generateResources(int numTables,String table,int numResource,int numPersons, int min, int max) {
+    public void generateResources(int numTables,String table,int numResource,int numPersons, int min, int max) throws IOException {
         
          for(int i =0;i<numTables;i++)
          {
@@ -1436,7 +1494,7 @@ public class MySql {
     
     
     //genera tablas de la forma ID,EDAD,CP,GENERO con gente aleatoria
-     public void generateTable(String table,int num,int min, int max, int CP,String sex) {
+     public void generateTable(String table,int num,int min, int max, int CP,String sex) throws IOException {
         
          int a=28000;
          String[] cp = new String[CP];
@@ -1511,11 +1569,24 @@ public class MySql {
         }
             
         }
-        
+        FileWriter archivo;
+        if (new File("log.txt").exists()==false)
+           archivo=new FileWriter(new File("log.txt"),false);
+              archivo = new FileWriter(new File("log.txt"),true);
+              
+        Calendar fechaActual = Calendar.getInstance();
+             archivo.write((String.valueOf(fechaActual.get(Calendar.DAY_OF_MONTH))
+                    +"/"+String.valueOf(fechaActual.get(Calendar.MONTH)+1)
+                    +"/"+String.valueOf(fechaActual.get(Calendar.YEAR))
+                    +";"+String.valueOf(fechaActual.get(Calendar.HOUR_OF_DAY))
+                    +":"+String.valueOf(fechaActual.get(Calendar.MINUTE))
+                    +":"+String.valueOf(fechaActual.get(Calendar.SECOND)))+";"+"Creado Tabla"+"\r\n");
+             archivo.write("nombre: "+table+"\r\n");
+             archivo.close();  
         
     }
       
-      public void generateTables(int numTables,String table,int num,int min, int max, int CP,String sex) {
+      public void generateTables(int numTables,String table,int num,int min, int max, int CP,String sex) throws IOException {
         
          for(int i =0;i<numTables;i++)
          {
