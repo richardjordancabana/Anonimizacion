@@ -255,7 +255,7 @@ public class MySql {
         int max=0;
         if (max1<max2)
                 max=max1;
-        else max=max2; //maximo de los maximos
+        else max=max2; //minimo de los maximos
         //COTA MINIMA DE LOS MAXIMOS
        
         int p=0;
@@ -273,7 +273,7 @@ public class MySql {
         IntVar k;
         int l=1; //nivel
         IntVar[] a;
-        IntVar[] cuenta;
+       // IntVar[] cuenta;
         int kvalor=0;
         
         
@@ -281,14 +281,19 @@ public class MySql {
         
         
         
-        
+        int maxLocal=0;
         while (suma != p && contador!=0){
             
             Solver solver = new Solver("Minimaze K");
             a = new IntVar[Q * R];//matriz plana
             for (int i = 0; i < Q; i++) {
                 for (int j = 0; j < R; j++) {
-                    a[i * R + j] = VariableFactory.enumerated("a" + i + "_" + j, 0, max, solver);
+                    
+                    if(rc[j+1]>qf[i+1]) 
+                        maxLocal=qf[i+1];
+                    else maxLocal=rc[j+1];
+                    a[i * R + j] = VariableFactory.enumerated("a" + i + "_" + j, 0, maxLocal, solver);
+                //VER OTRA DEFINICION DE ARRAY
                 }
              }
             
@@ -318,11 +323,17 @@ public class MySql {
              }
             
              //C3
-             if(l!=1){
-                vchoco= VariableFactory.enumeratedArray("vchoco" ,max+1, 0, max, solver);
-                for (int i=1;i<=l;i++)
+             if(l!=1){//cambios probar
+                vchoco= VariableFactory.enumeratedArray("vchoco" ,l, 0, p, solver);
+                //cambiar max=poblacion
+                
+                for (int i=0;i<l;i++)
                  {
+                     //
+                     
                      solver.post(IntConstraintFactory.arithm(vchoco[i], "=", v[i])); // se supone q los ceros no se consideran
+                 //probar asignacion de las dos formas.
+                 
                  }
                 
             }
@@ -332,7 +343,8 @@ public class MySql {
 
              
              //C4
-             k=VariableFactory.enumerated("k", 0, max, solver);
+             //max poblacion/l+1
+             k=VariableFactory.enumerated("k", 0, p/l, solver);
              solver.post(IntConstraintFactory.count(l,a,k));
             //  solver.post(IntConstraintFactory.arithm(vchoco[l], "=", k));
              //minimizar k
@@ -363,7 +375,7 @@ public class MySql {
                     +";"+String.valueOf(fechaActual.get(Calendar.HOUR_OF_DAY))
                     +":"+String.valueOf(fechaActual.get(Calendar.MINUTE))
                     +":"+String.valueOf(fechaActual.get(Calendar.SECOND)))+";"+"Saliendo Choco"+"\r\n");
-             archivo.close();  
+               
              
              
                if(solver.findSolution()){
@@ -391,9 +403,15 @@ public class MySql {
              v[l]=kvalor;
              l++;
              suma=0;
-             for(int i=0; i<max+1;i++)
+             archivo.write("KVALOR:     "+ kvalor+"\r\n");
+             archivo.write("LEVEL:     "+ l+"\r\n");
+             
+             for(int i=0; i<l;i++)
                    suma=suma+v[i]*i;
             // break;
+             archivo.write("SUMA:     "+ suma+"\r\n");
+             archivo.close();
+             
         }
         
         return new  MyResult(total,v);
