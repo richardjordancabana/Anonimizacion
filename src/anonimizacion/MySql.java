@@ -282,6 +282,7 @@ public class MySql {
         
         
         int maxLocal=0;
+        
         while (suma != p && contador!=0){
             
             Solver solver = new Solver("Minimaze K");
