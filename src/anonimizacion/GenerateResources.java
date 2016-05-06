@@ -22,10 +22,15 @@ public class GenerateResources extends javax.swing.JFrame {
     public String user;
     public String password;
     public String bbdd;
+    
+    
+    
+    
     public GenerateResources() {
         initComponents();
         this.setTitle("Generate Resources");
         this.setLocationRelativeTo(null);
+        this.setResizable(false);
     }
 
     /**
@@ -54,18 +59,27 @@ public class GenerateResources extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel1.setText("Number of Resources");
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel2.setText("Number of Persons");
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel3.setText("Min Capacity");
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel4.setText("Max Capacity");
 
+        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jTextField2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jTextField3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jTextField4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton1.setText("OK");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -73,6 +87,7 @@ public class GenerateResources extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jButton2.setText("Cancel");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -80,20 +95,24 @@ public class GenerateResources extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel5.setText("Table Name");
 
-        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jTextField5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         jLabel6.setText("Number of Tables");
+
+        jTextField6.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(74, 74, 74)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(74, 74, 74)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel3)
                             .addComponent(jLabel2)
@@ -108,13 +127,14 @@ public class GenerateResources extends javax.swing.JFrame {
                             .addComponent(jTextField3)
                             .addComponent(jTextField4)
                             .addComponent(jTextField5)
-                            .addComponent(jTextField6)))
+                            .addComponent(jTextField6))
+                        .addContainerGap(131, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(139, 139, 139)
-                        .addComponent(jButton1)
-                        .addGap(87, 87, 87)
-                        .addComponent(jButton2)))
-                .addContainerGap(143, Short.MAX_VALUE))
+                        .addGap(36, 36, 36)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(79, 79, 79))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,10 +163,10 @@ public class GenerateResources extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton2)
-                    .addComponent(jButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(52, 52, 52))
         );
 
@@ -183,7 +203,9 @@ public class GenerateResources extends javax.swing.JFrame {
         } catch (IOException ex) {
             Logger.getLogger(GenerateResources.class.getName()).log(Level.SEVERE, null, ex);
         }
+            
                   db.closeConnection();
+                  this.setVisible(false);
           
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -199,6 +221,15 @@ public class GenerateResources extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    public void setNombre(String n){
+        jTextField5.setText(n);
+    }
+    public void setNumero(String n){
+        jTextField6.setText(n);
+    }
+    public void setPoblacion(String n){
+        jTextField2.setText(n);
+    }
     /**
      * @param args the command line arguments
      */
