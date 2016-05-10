@@ -274,13 +274,7 @@ public class MySql {
         int l=1; //nivel
         IntVar[] a;
        // IntVar[] cuenta;
-        int kvalor=0;
-        
-        
-        
-        
-        
-        
+        int kvalor=0;        
         int maxLocal=0;
         
         while (suma != p && contador!=0){
@@ -305,11 +299,11 @@ public class MySql {
              for (int i = 0; i < Q; i++) {
                  fila = new IntVar[R];
                 for (int j = 0; j < R; j++) {
-                    
                     fila[j]=a[i*R+j];
                 }
                 
-                IntVar sum=VariableFactory.enumerated(qf[i+1]+"", qf[i+1], qf[i+1], solver);//TRUCO?
+               // IntVar sum=VariableFactory.enumerated(qf[i+1]+"", qf[i+1], qf[i+1], solver);//TRUCO?
+                   IntVar sum=VariableFactory.fixed(qf[i+1],solver);
                 solver.post(IntConstraintFactory.sum(fila,sum));
              }
              //C2
@@ -319,7 +313,8 @@ public class MySql {
                     
                     columna[j]=a[i+j*R];
                 }
-                IntVar sum1=VariableFactory.enumerated(rc[i+1]+"", rc[i+1], rc[i+1], solver);
+              //  IntVar sum1=VariableFactory.enumerated(rc[i+1]+"", rc[i+1], rc[i+1], solver);
+                IntVar sum1=VariableFactory.fixed(rc[i+1],solver);
                 solver.post(IntConstraintFactory.sum(columna,"<=",sum1));
              }
             
@@ -335,14 +330,10 @@ public class MySql {
                      solver.post(IntConstraintFactory.arithm(vchoco[i], "=", v[i])); // se supone q los ceros no se consideran
                  //probar asignacion de las dos formas.
                  
-                 }
-                
+                 }   
             }
-  
              for(int i =1;i<l;i++)
                 solver.post(IntConstraintFactory.count(i,a,vchoco[i]));
-
-             
              //C4
              //max poblacion/l+1
              k=VariableFactory.enumerated("k", 0, p/l, solver);
@@ -361,21 +352,19 @@ public class MySql {
                     +":"+String.valueOf(fechaActual.get(Calendar.MINUTE))
                     +":"+String.valueOf(fechaActual.get(Calendar.SECOND)))+";"+"Entrando Choco"+"\r\n");
              archivo.close();
-             
              solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, k);
-             
              
            if (new File("log.txt").exists()==false)
            archivo=new FileWriter(new File("log.txt"),false);
               archivo = new FileWriter(new File("log.txt"),true);
               
             fechaActual = Calendar.getInstance();
-             archivo.write((String.valueOf(fechaActual.get(Calendar.DAY_OF_MONTH))
+            archivo.write((String.valueOf(fechaActual.get(Calendar.DAY_OF_MONTH))
                     +"/"+String.valueOf(fechaActual.get(Calendar.MONTH)+1)
                     +"/"+String.valueOf(fechaActual.get(Calendar.YEAR))
                     +";"+String.valueOf(fechaActual.get(Calendar.HOUR_OF_DAY))
                     +":"+String.valueOf(fechaActual.get(Calendar.MINUTE))
-                    +":"+String.valueOf(fechaActual.get(Calendar.SECOND)))+";"+"Saliendo Choco"+"\r\n");
+                    +":"+String.valueOf(fechaActual.get(Calendar.SECOND)))+";"+"  Saliendo Choco"+"\r\n");
                
              
              
