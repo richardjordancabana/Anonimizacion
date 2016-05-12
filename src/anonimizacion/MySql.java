@@ -468,6 +468,16 @@ public class MySql {
             JOptionPane.showMessageDialog(null, "Error getting data.");
         }
           archivo.write("QF VECTOR: "+Arrays.toString(qf)+"\r\n");
+          
+          //VINICIAL
+          int[] vInicial= new int[Q+1];
+          for(int ii=1;ii<=Q;ii++)
+          {
+              vInicial[qf[ii]]++;
+          }
+          
+          
+          
           //R=nº recursos (filas de  recursos).
          int R=0;
          try {
@@ -851,7 +861,7 @@ public class MySql {
   
         try {
             String Query = "CREATE TABLE " + nombreTablaV + ""
-                    + "(VRANDOM VARCHAR(1000),VINTELLIGENT VARCHAR(1000))";
+                    + "(NAME_TABLE VARCHAR(1000),NAME_RESOURCE VARCHAR(1000),Q int,R int,Num_Population int,VINI VARCHAR(1000),VRANDOM VARCHAR(1000),VINTELLIGENT VARCHAR(1000))";
 
             Statement st = Conexion.createStatement();
             st.executeUpdate(Query);
@@ -865,6 +875,12 @@ public class MySql {
         
          try {
             String sent="INSERT INTO "+ nombreTablaV + " VALUES("
+                    + "\"" + nameTable + "\""+ ","
+                    + "\"" + nameResource + "\""+ ","
+                    + Q + ","
+                    + R + ","
+                    + numPersons+ ","
+                    + "\"" + Arrays.toString(vInicial) + "\""+ ","
                     + "\"" + Arrays.toString(vRandom) + "\""+ ","
                     + "\"" + Arrays.toString(v) + "\"" + ")" ;
             Statement st = Conexion.createStatement();
