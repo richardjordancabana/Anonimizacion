@@ -353,7 +353,7 @@ public class MySql {
                     +":"+String.valueOf(fechaActual.get(Calendar.SECOND)))+";"+"Entrando Choco"+"\r\n");
              archivo.close();
              solver.findOptimalSolution(ResolutionPolicy.MINIMIZE, k);
-             
+              
            if (new File("log.txt").exists()==false)
            archivo=new FileWriter(new File("log.txt"),false);
               archivo = new FileWriter(new File("log.txt"),true);
@@ -470,7 +470,12 @@ public class MySql {
           archivo.write("QF VECTOR: "+Arrays.toString(qf)+"\r\n");
           
           //VINICIAL
-          int[] vInicial= new int[Q+1];
+          int maxx=qf[0];
+          for(int ii=1;ii<=Q;ii++)
+          {
+              if (qf[ii]>maxx) maxx=qf[ii];
+          }
+          int[] vInicial= new int[maxx+1];
           for(int ii=1;ii<=Q;ii++)
           {
               vInicial[qf[ii]]++;
