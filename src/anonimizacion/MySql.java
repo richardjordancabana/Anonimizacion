@@ -262,11 +262,11 @@ public class MySql {
         for(int i=0; i<Q+1;i++)
            p=p+qf[i]; //poblacion total
      
-        v= new int[max+1];//vector de anonimicidad TAMAÑO MIN DE LOS MAX
-        for(int i=0; i<max+1;i++)
+        v= new int[p+1];//vector de anonimicidad TAMAÑO MIN DE LOS MAX
+        for(int i=0; i<p+1;i++)
            v[i]=0;
         int suma=0;
-        for(int i=0; i<max+1;i++)
+        for(int i=0; i<p+1;i++)
            suma=suma+v[i]*i;
            
         IntVar[] vchoco=null;   
@@ -896,8 +896,35 @@ public class MySql {
         }
             
         
+        if (new File("log.txt").exists()==false)
+           archivo=new FileWriter(new File("log.txt"),false);
+              archivo = new FileWriter(new File("log.txt"),true);
+          
+              
+              
+        int suma=0;
+        for(int ab=0; ab<v.length;ab++)
+           suma=suma+v[ab]*ab;
+        int[] cvInicial= new int[vInicial.length-1];
+        int[] cvRandom= new int[vRandom.length-1];
+        int[] cv= new int[v.length-1];
+        for(int ab=0; ab<cvInicial.length;ab++)
+            cvInicial[ab]=vInicial[ab+1];
+        for(int ab=0; ab<cvRandom.length;ab++)
+            cvRandom[ab]=vRandom[ab+1];
+        for(int ab=0; ab<cv.length;ab++)
+            cv[ab]=v[ab+1];
         
         
+        archivo.write("cvInicial: "+  Arrays.toString(cvInicial));
+        archivo.write("\r\n");
+        archivo.write( "cvRandom: "+  Arrays.toString(cvRandom));
+        archivo.write("\r\n");
+        archivo.write( "cv: "+  Arrays.toString(cv));
+        archivo.write("\r\n");
+        archivo.write("Distancia:" + Tuple.distance(suma, cvInicial, cvRandom, cv));
+        archivo.write("\r\n");
+         archivo.close();  
          
            
 //FIN PARTE ALEATORIA
