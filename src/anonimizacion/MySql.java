@@ -262,11 +262,11 @@ public class MySql {
         for(int i=0; i<Q+1;i++)
            p=p+qf[i]; //poblacion total
      
-        v= new int[p+1];//vector de anonimicidad TAMAÑO MIN DE LOS MAX
-        for(int i=0; i<p+1;i++)
+        v= new int[max+1];//vector de anonimicidad TAMAÑO MIN DE LOS MAX
+        for(int i=0; i<max+1;i++)
            v[i]=0;
         int suma=0;
-        for(int i=0; i<p+1;i++)
+        for(int i=0; i<max+1;i++)
            suma=suma+v[i]*i;
            
         IntVar[] vchoco=null;   
@@ -336,7 +336,7 @@ public class MySql {
                 solver.post(IntConstraintFactory.count(i,a,vchoco[i]));
              //C4
              //max poblacion/l+1
-             k=VariableFactory.enumerated("k", 0, p/l, solver);
+             k=VariableFactory.enumerated("k", 0, (p-suma)/l, solver); //p-suma/l
              solver.post(IntConstraintFactory.count(l,a,k));
             //  solver.post(IntConstraintFactory.arithm(vchoco[l], "=", k));
              //minimizar k
