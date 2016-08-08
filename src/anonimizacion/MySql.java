@@ -795,7 +795,7 @@ public class MySql {
                  campos1=campos1+atributos[a]+"= "+"\""+cuasis[xx+1][a]+"\""+" AND ";
             campos1=campos1+" REC_RAND = ";
             campos2=campos1;
-            for(int yy=0;yy<R;yy++){
+            for(int yy=0;yy<R;yy++){ 
                 int aux=yy+1;
                 campos1=campos2+aux;
                 String querySelect= " SELECT COUNT(*) FROM " + nameTable + " WHERE "+ campos1 + " ";
